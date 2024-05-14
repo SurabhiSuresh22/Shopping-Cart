@@ -13,6 +13,9 @@ export class SignUpDto{
     @IsString()
     @MinLength(8)
     password: string;
+
+    @IsNotEmpty()
+    role: Role
 }
 
 export class LoginDto{
@@ -24,4 +27,11 @@ export class LoginDto{
     @IsString()
     @MinLength(8)
     password: string;
+
+    role: Role
+}
+
+export enum Role {
+    USER = "user",
+    ADMIN = "admin"
 }

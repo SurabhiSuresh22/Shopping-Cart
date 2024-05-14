@@ -1,4 +1,5 @@
-import { Module, ValidationPipe } from "@nestjs/common";
+import { Module, MiddlewareConsumer, ValidationPipe } from "@nestjs/common";
+import { LoggerMiddleware } from "./middleware/common.middleware";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule } from "@nestjs/config"
 import { ProductModule } from './product/product.module';
@@ -21,4 +22,8 @@ import { AuthModule } from "./auth/auth.module";
   controllers: [],
   providers: [{ provide: APP_PIPE, useClass: ValidationPipe }],
 })
-export class AppModule {}
+export class AppModule {configure(consumer: MiddlewareConsumer) {
+  consumer
+    .apply(LoggerMiddleware)
+    .forRoutes('product');
+}}

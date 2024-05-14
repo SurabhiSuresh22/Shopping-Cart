@@ -1,7 +1,11 @@
-import { Controller, Delete, Get, Param, Patch, Post, Body, HttpCode } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Patch, Post, Body, HttpCode, UseGuards } from '@nestjs/common';
 import { CreateProductDto, UpdateProductDto } from 'src/dtos/product.dto';
 import { ProductService } from './product.service';
 import { Product } from 'src/schemas/product.schema';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/dtos/user.dto';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('product')
 export class ProductController {
@@ -28,6 +32,7 @@ export class ProductController {
 
   @HttpCode(201)
   @Post()
+  @UseGuards(AuthGuard())
   createProduct(
     @Body() productInfo : CreateProductDto
   ){
@@ -41,7 +46,9 @@ export class ProductController {
   ){
     return this.productService.updateProduct(id, productInfo)
   }
-
+  
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard(), RolesGuard)
   @HttpCode(204)
   @Delete(':id')
   deleteProduct(@Param('id') id: string){
